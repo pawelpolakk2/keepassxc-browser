@@ -762,6 +762,12 @@ kpxc.siteIgnored = async function(condition) {
     return false;
 };
 
+// A login script often starts on a page with only the username field, which needs the icon too.
+// Checked against the current URL, because single-page apps leave the login page without a reload.
+kpxc.isSingleInputEnabled = function() {
+    return kpxc.singleInputEnabledForPage || kpxcLoginScripts.findMatchingScript(window.location.href) !== undefined;
+};
+
 // Updates database status and icons when tab is activated again
 kpxc.triggerActivatedTab = async function() {
     await kpxc.updateDatabaseState();

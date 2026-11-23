@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login script tests</title>
+    <meta charset="UTF-8">
+    <script src="../common/browser-polyfill.min.js"></script>
+    <script defer src="../common/global.js"></script>
+    <script defer src="../common/sites.js"></script>
+    <script defer src="../common/login-script.js"></script>
+    <script defer src="../content/ui.js"></script>
+    <script defer src="../content/fields.js"></script>
+    <script defer src="../content/fill.js"></script>
+    <script defer src="../content/keepassxc-browser.js"></script>
+    <script defer src="../content/login-scripts.js"></script>
+    <script defer src="../content/observer-helper.js"></script>
+    <script defer src="login-scripts-page.js"></script>
+  </head>
+  <body>
+    <form id="customerStep">
+      <label for="customer">Customer number</label>
+      <input type="text" id="customer" maxlength="20">
+      <button type="button" id="next">Next</button>
+    </form>
+
+    <form id="passwordStep" hidden>
+      <bank-masked-input id="password"></bank-masked-input>
+      <button type="button" id="login" disabled>Log in</button>
+    </form>
+  </body>
+</html>

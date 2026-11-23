@@ -51,7 +51,7 @@ kpxcFields.getAllCombinations = async function(inputs) {
     // Allow single input if autocomplete="username" is present, or Username-Only Detection is enabled for the page
     const autoComplete = usernameField?.getLowerCaseAttribute('autocomplete');
     if (combinations.length === 0 && usernameField &&
-        (kpxc.singleInputEnabledForPage || autoComplete?.includes('username') || autoComplete?.includes('email'))
+        (kpxc.isSingleInputEnabled() || autoComplete?.includes('username') || autoComplete?.includes('email'))
     ) {
         const combination = {
             username: usernameField,
@@ -246,7 +246,7 @@ kpxcFields.getAllPageInputs = async function(previousInputs = []) {
     kpxc.detectedFields = previousInputs.length + fields.length;
 
     // Show add username-only option for the site in popup
-    if (!kpxc.singleInputEnabledForPage
+    if (!kpxc.isSingleInputEnabled()
         && ((fields.length === 1 && fields[0].getLowerCaseAttribute('type') !== 'password')
         || (previousInputs.length === 1 && previousInputs[0].getLowerCaseAttribute('type') !== 'password'))) {
         sendMessage('username_field_detected', true);

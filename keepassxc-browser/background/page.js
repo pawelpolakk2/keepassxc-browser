@@ -127,6 +127,7 @@ page.resetAllSettings = async function() {
     }
 
     page.settings[DEFINED_CUSTOM_FIELDS] = {};
+    page.settings[LOGIN_SCRIPTS] = [];
     page.settings.sitePreferences = [];
     await browser.storage.local.set({ 'settings': page.settings });
 };

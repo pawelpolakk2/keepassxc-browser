@@ -146,6 +146,14 @@ table td:last-of-type {
     width: 1px;
 }
 
+#loginScriptReference td:last-of-type {
+    width: auto;
+}
+
+#loginScriptExample {
+    white-space: pre;
+}
+
 .close {
     color: var(--kpxc-text-color);
 }

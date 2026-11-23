@@ -32,6 +32,10 @@ kpxcFill.fillInFromActiveElement = async function(passOnly = false) {
         return;
     }
 
+    if (await kpxcLoginScripts.runIfMatching(kpxc.credentials[0])) {
+        return;
+    }
+
     if (kpxc.combinations.length > 0) {
         if (await kpxcFill.fillFromCombination(elem, passOnly)) {
             // Combination found and filled
@@ -96,6 +100,11 @@ kpxcFill.fillFromAutofill = async function() {
 
 // Fill requested by selecting credentials from the popup
 kpxcFill.fillFromPopup = async function(id, uuid) {
+    if (await kpxcLoginScripts.runIfMatching(kpxc.credentials.find(c => c.uuid === uuid))) {
+        await sendMessage('page_set_login_id', uuid);
+        return;
+    }
+
     if (kpxc.credentials.length === 0 || !kpxc.credentials[id] || kpxc.combinations.length === 0) {
         logDebug('Error: Credential list is empty.');
         return;
@@ -236,6 +245,10 @@ kpxcFill.fillInCredentials = async function(combination, predefinedUsername, uui
     const selectedCredentials = kpxc.credentials.find(c => c.uuid === uuid);
     if (!selectedCredentials) {
         logError('Uuid not found: ' + uuid);
+        return;
+    }
+
+    if (await kpxcLoginScripts.runIfMatching(selectedCredentials)) {
         return;
     }
 
@@ -387,6 +400,11 @@ kpxcFill.setValueWithChange = async function(field, value, forced = false) {
         return;
     }
 
+    await kpxcFill.dispatchValueChange(field, value);
+};
+
+// Sets the value with the events a typing user triggers
+kpxcFill.dispatchValueChange = async function(field, value) {
     const dispatchLegacyEvent = function(elem, eventName) {
         const legacyEvent = elem.ownerDocument.createEvent('Event');
         legacyEvent.initEvent(eventName, true, false);

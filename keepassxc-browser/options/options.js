@@ -540,6 +540,167 @@ options.initCustomLoginFields = function() {
     }
 };
 
+options.initLoginScripts = function() {
+    if (!options.settings[LOGIN_SCRIPTS]) {
+        options.settings[LOGIN_SCRIPTS] = [];
+    }
+
+    options.editedLoginScriptIndex = undefined;
+    options.renderLoginScriptReference();
+    options.renderLoginScriptRows();
+    options.initDeleteLoginScriptDialog();
+
+    $('#loginScriptAdd').addEventListener('click', () => options.openLoginScriptEditor(undefined));
+    $('#loginScriptCancel').addEventListener('click', () => options.closeLoginScriptEditor());
+    $('#loginScriptSave').addEventListener('click', () => options.saveLoginScript());
+    $('#loginScriptInsertExample').addEventListener('click', () => options.insertLoginScriptExample());
+    $('#loginScriptSource').addEventListener('keydown', (e) => options.insertSpacesOnTab(e));
+    for (const id of [ '#loginScriptName', '#loginScriptUrlPattern', '#loginScriptSource' ]) {
+        $(id).addEventListener('input', () => options.showLoginScriptProblems());
+    }
+};
+
+options.renderLoginScriptReference = function() {
+    const tbody = $('#loginScriptReference tbody');
+    for (const builtin of kpxcLoginScriptLanguage.BUILTINS) {
+        const row = document.createElement('tr');
+        const signature = builtin.kind === 'constant' ? builtin.name : `${builtin.name}(${builtin.params.join(', ')})`;
+        for (const text of [ signature, builtin.returns, builtin.description ]) {
+            const cell = document.createElement('td');
+            cell.textContent = text;
+            row.append(cell);
+        }
+        row.firstChild.classList.add('font-monospace', 'text-nowrap');
+        tbody.append(row);
+    }
+
+    $('#loginScriptExample').textContent = kpxcLoginScriptLanguage.EXAMPLE;
+};
+
+options.renderLoginScriptRows = function() {
+    const tbody = $('#loginScriptsTable tbody');
+    for (const row of tbody.querySelectorAll('tr.login-script')) {
+        row.remove();
+    }
+
+    const rowClone = tbody.querySelector('tr.clone');
+    for (const [ index, script ] of options.settings[LOGIN_SCRIPTS].entries()) {
+        const row = rowClone.cloneNode(true);
+        row.classList.remove('clone', 'd-none');
+        row.classList.add('login-script');
+        row.querySelector('.login-script-name').textContent = script.name;
+        row.querySelector('.login-script-url-pattern').textContent = script.urlPattern;
+        row.querySelector('button.edit').addEventListener('click', () => options.openLoginScriptEditor(index));
+        row.querySelector('button.delete').addEventListener('click', () => options.showDeleteLoginScriptDialog(index));
+        tbody.append(row);
+    }
+};
+
+options.openLoginScriptEditor = function(index) {
+    const script = index === undefined ? { name: '', urlPattern: '', source: '' } : options.settings[LOGIN_SCRIPTS][index];
+    options.editedLoginScriptIndex = index;
+
+    $('#loginScriptName').value = script.name;
+    $('#loginScriptUrlPattern').value = script.urlPattern;
+    $('#loginScriptSource').value = script.source;
+    $('#loginScriptEditor').classList.remove('d-none');
+    options.showLoginScriptProblems();
+    $('#loginScriptName').focus();
+};
+
+options.closeLoginScriptEditor = function() {
+    options.editedLoginScriptIndex = undefined;
+    $('#loginScriptEditor').classList.add('d-none');
+};
+
+options.readLoginScriptEditor = function() {
+    return {
+        name: $('#loginScriptName').value.trim(),
+        urlPattern: $('#loginScriptUrlPattern').value.trim(),
+        source: $('#loginScriptSource').value,
+    };
+};
+
+options.findLoginScriptEditorProblems = function(script) {
+    const nameProblems = script.name ? [] : [ tr('optionsLoginScriptsNameEmpty') ];
+    return [
+        ...nameProblems,
+        ...kpxcLoginScriptLanguage.findUrlPatternProblems(script.urlPattern),
+        ...kpxcLoginScriptLanguage.findProblems(script.source),
+    ];
+};
+
+options.showLoginScriptProblems = function() {
+    const problems = options.findLoginScriptEditorProblems(options.readLoginScriptEditor());
+    const list = $('#loginScriptProblems');
+    list.replaceChildren(...problems.map(function(problem) {
+        const item = document.createElement('li');
+        item.textContent = problem;
+        return item;
+    }));
+
+    $('#loginScriptSave').disabled = problems.length > 0;
+};
+
+options.saveLoginScript = async function() {
+    const script = options.readLoginScriptEditor();
+    if (options.findLoginScriptEditorProblems(script).length > 0) {
+        return;
+    }
+
+    const scripts = [ ...options.settings[LOGIN_SCRIPTS] ];
+    if (options.editedLoginScriptIndex === undefined) {
+        scripts.push(script);
+    } else {
+        scripts[options.editedLoginScriptIndex] = script;
+    }
+
+    options.settings[LOGIN_SCRIPTS] = scripts;
+    await options.saveSettings();
+    options.closeLoginScriptEditor();
+    options.renderLoginScriptRows();
+};
+
+options.insertLoginScriptExample = function() {
+    const source = $('#loginScriptSource');
+    source.value = source.value.trim() ? `${source.value.trimEnd()}\n\n${kpxcLoginScriptLanguage.EXAMPLE}` : kpxcLoginScriptLanguage.EXAMPLE;
+    options.showLoginScriptProblems();
+};
+
+options.insertSpacesOnTab = function(e) {
+    if (e.key !== 'Tab' || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) {
+        return;
+    }
+
+    e.preventDefault();
+    e.target.setRangeText('    ', e.target.selectionStart, e.target.selectionEnd, 'end');
+    options.showLoginScriptProblems();
+};
+
+options.initDeleteLoginScriptDialog = function() {
+    options.deleteLoginScriptModal = new bootstrap.Modal('#dialogDeleteLoginScript', { keyboard: true, focus: false, backdrop: true });
+
+    $('#dialogDeleteLoginScript').addEventListener('shown.bs.modal', function(modalEvent) {
+        modalEvent.currentTarget.querySelector('.modal-footer button.yes').focus();
+    });
+
+    $('#dialogDeleteLoginScript .modal-footer button.yes').addEventListener('click', async function() {
+        options.deleteLoginScriptModal.hide();
+        const index = Number($('#dialogDeleteLoginScript').getAttribute('script-index'));
+        options.settings[LOGIN_SCRIPTS] = options.settings[LOGIN_SCRIPTS].filter((ignored, i) => i !== index);
+
+        await options.saveSettings();
+        options.closeLoginScriptEditor();
+        options.renderLoginScriptRows();
+    });
+};
+
+options.showDeleteLoginScriptDialog = function(index) {
+    $('#dialogDeleteLoginScript').setAttribute('script-index', String(index));
+    $('#dialogDeleteLoginScript .modal-body strong').textContent = options.settings[LOGIN_SCRIPTS][index].name;
+    options.deleteLoginScriptModal.show();
+};
+
 options.initSitePreferences = function() {
     if (!options.settings['sitePreferences']) {
         options.settings['sitePreferences'] = [];
@@ -993,6 +1154,7 @@ window.addEventListener('scroll', function() {
         await options.initGeneralSettings();
         options.initConnectedDatabases();
         options.initCustomLoginFields();
+        options.initLoginScripts();
         options.initSitePreferences();
         options.initAbout();
         options.hideUnsupportedFeatures();

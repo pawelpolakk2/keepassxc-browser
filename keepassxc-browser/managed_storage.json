@@ -118,6 +118,26 @@
           "title": "Downloads favicon in KeePassXC after credential is created. Default: false",
           "type": "boolean"
         },
+        "loginScripts": {
+          "title": "Custom Login Scripts. Each script runs on pages whose URL matches its regular expression.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "urlPattern": {
+                "title": "Regular expression for the page URL. Must start with ^https:// or ^http://",
+                "type": "string"
+              },
+              "source": {
+                "title": "Script source",
+                "type": "string"
+              }
+            }
+          }
+        },
         "passkeys": {
           "title": "Enable support for passkeys. Default: false",
           "type": "boolean"

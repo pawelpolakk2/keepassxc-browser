@@ -702,6 +702,94 @@
         "message": "Connected Databases",
         "description": "Connected Databases page header."
     },
+    "optionsMenuLoginScripts": {
+        "message": "Custom Login Scripts",
+        "description": "Custom Login Scripts page header."
+    },
+    "optionsLoginScriptsTab": {
+        "message": "Custom Login Scripts",
+        "description": "Custom Login Scripts tab title."
+    },
+    "optionsLoginScriptsTabHelpTextFirst": {
+        "message": "A login script fills a login page that normal filling cannot handle, for example a masked password where the bank asks only for some characters. When the page URL matches the pattern, the script runs instead of the normal fill. Start it with the keyboard shortcut, the context menu or by choosing credentials in the popup.",
+        "description": "Custom Login Scripts help text."
+    },
+    "optionsLoginScriptsTabHelpTextSecond": {
+        "message": "Scripts run in a sandbox. They can use only the functions listed below, and never eval, the network or the JavaScript of the page. A script gets only the credentials that KeePassXC returns for the current page.",
+        "description": "Custom Login Scripts security help text."
+    },
+    "optionsColumnLoginScriptName": {
+        "message": "Name",
+        "description": "Custom Login Scripts list column title."
+    },
+    "optionsColumnUrlPattern": {
+        "message": "URL pattern",
+        "description": "Custom Login Scripts list column title."
+    },
+    "optionsLoginScriptsNotFound": {
+        "message": "No login scripts found.",
+        "description": "Shown when no Custom Login Scripts are defined."
+    },
+    "optionsLoginScriptsName": {
+        "message": "Name",
+        "description": "Login script name input label."
+    },
+    "optionsLoginScriptsUrlPattern": {
+        "message": "URL pattern (regular expression)",
+        "description": "Login script URL pattern input label."
+    },
+    "optionsLoginScriptsUrlPatternHelpText": {
+        "message": "Must start with ^https://. Escape the dots and end the host with a slash, for example ^https://www\\.example\\.com/ — otherwise www.example.com.evil.net would match too.",
+        "description": "Login script URL pattern help text."
+    },
+    "optionsLoginScriptsSource": {
+        "message": "Script",
+        "description": "Login script source textarea label."
+    },
+    "optionsLoginScriptsInsertExample": {
+        "message": "Insert example",
+        "description": "Button that inserts an example login script."
+    },
+    "optionsLoginScriptsNameEmpty": {
+        "message": "The name is empty.",
+        "description": "Shown when a login script has no name."
+    },
+    "optionsLoginScriptsReference": {
+        "message": "Available functions",
+        "description": "Login script function reference header."
+    },
+    "optionsLoginScriptsReferenceHelpText": {
+        "message": "The language looks like JavaScript: const, let, if, else, for, for...of, while, break, continue, return, text, numbers, lists, template strings and the usual operators. == works like ===. Functions wait by themselves, so no await is needed. Only .length can be read from text and lists.",
+        "description": "Login script language help text."
+    },
+    "optionsColumnLoginScriptFunction": {
+        "message": "Function",
+        "description": "Login script function reference column title."
+    },
+    "optionsColumnLoginScriptReturns": {
+        "message": "Returns",
+        "description": "Login script function reference column title."
+    },
+    "optionsColumnLoginScriptDescription": {
+        "message": "Description",
+        "description": "Login script function reference column title."
+    },
+    "optionsLoginScriptsExample": {
+        "message": "Example: customer number on the first page, masked password on the second",
+        "description": "Login script example header."
+    },
+    "optionsLoginScriptsRemove": {
+        "message": "Remove login script",
+        "description": "Remove login script dialog title."
+    },
+    "optionsLoginScriptsConfirmation": {
+        "message": "Do you really want to remove the login script $1?",
+        "description": "Remove login script confirmation text."
+    },
+    "loginScriptFailed": {
+        "message": "Login script \"$1\" failed: $2",
+        "description": "Notification shown when a login script fails."
+    },
     "optionsMenuCustomFields": {
         "message": "Custom Login Fields",
         "description": "Custom Login Fields page header."

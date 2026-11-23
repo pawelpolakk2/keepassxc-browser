@@ -15,6 +15,7 @@
     <script src="../common/global.js"></script>
     <script src="../common/global_ui.js"></script>
     <script src="../common/sites.js"></script>
+    <script src="../common/login-script.js"></script>
     <script src="../bootstrap/bootstrap.min.js"></script>
     <script src="options.js"></script>
     <script src="../common/translate.js" defer></script>
@@ -45,6 +46,12 @@
                 <a class="nav-link text-light rounded-sm" href="#custom-fields">
                   <i class="fa fa-sign-in fa-lg pe-2" aria-hidden="true"></i>
                   <span class="menu-item" data-i18n="optionsMenuCustomFields"></span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-light rounded-sm" href="#login-scripts">
+                  <i class="fa fa-code fa-lg pe-2" aria-hidden="true"></i>
+                  <span class="menu-item" data-i18n="optionsMenuLoginScripts"></span>
                 </a>
               </li>
               <li class="nav-item">
@@ -765,6 +772,128 @@
                           </button>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Custom login scripts -->
+            <div class="tab d-none" id="tab-login-scripts">
+              <h2 class="pb-3 mt-0" data-i18n="optionsLoginScriptsTab"></h2>
+
+              <div class="card my-4 shadow">
+                <div class="card-body">
+                  <p data-i18n="optionsLoginScriptsTabHelpTextFirst"></p>
+                  <p data-i18n="optionsLoginScriptsTabHelpTextSecond"></p>
+                  <div class="table-responsive">
+                    <table class="table table-sm table-striped table-bordered" id="loginScriptsTable">
+                      <thead>
+                        <tr>
+                          <th scope="col"><span data-i18n="optionsColumnLoginScriptName"></span></th>
+                          <th scope="col"><span data-i18n="optionsColumnUrlPattern"></span></th>
+                          <th scope="col"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="empty">
+                          <td colspan="3"><span data-i18n="optionsLoginScriptsNotFound"></span></td>
+                        </tr>
+                        <tr class="clone d-none">
+                          <td class="login-script-name"></td>
+                          <td class="login-script-url-pattern font-monospace"></td>
+                          <td class="text-nowrap">
+                            <button class="btn btn-sm btn-primary edit" type="button">
+                              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                              <span data-i18n="optionsButtonEdit"></span>
+                            </button>
+                            <button class="btn btn-sm btn-danger delete" type="button">
+                              <i class="fa fa-remove" aria-hidden="true"></i>
+                              <span data-i18n="optionsButtonRemove"></span>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <button class="btn btn-sm btn-primary" type="button" id="loginScriptAdd">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    <span data-i18n="optionsButtonAdd"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="card my-4 shadow d-none" id="loginScriptEditor">
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="form-label" for="loginScriptName" data-i18n="optionsLoginScriptsName"></label>
+                    <input class="form-control form-control-sm" type="text" id="loginScriptName" maxlength="200">
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="loginScriptUrlPattern" data-i18n="optionsLoginScriptsUrlPattern"></label>
+                    <input class="form-control form-control-sm font-monospace" type="text" id="loginScriptUrlPattern" maxlength="2000" spellcheck="false" placeholder="^https://www\.example\.com/login">
+                    <div class="form-text" data-i18n="optionsLoginScriptsUrlPatternHelpText"></div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label" for="loginScriptSource" data-i18n="optionsLoginScriptsSource"></label>
+                    <textarea class="form-control font-monospace" id="loginScriptSource" rows="16" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+                  </div>
+                  <ul class="text-danger small" id="loginScriptProblems"></ul>
+                  <button class="btn btn-sm btn-secondary" type="button" id="loginScriptCancel">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                    <span data-i18n="optionsButtonCancel"></span>
+                  </button>
+                  <button class="btn btn-sm btn-secondary" type="button" id="loginScriptInsertExample">
+                    <i class="fa fa-file-code-o" aria-hidden="true"></i>
+                    <span data-i18n="optionsLoginScriptsInsertExample"></span>
+                  </button>
+                  <button class="btn btn-sm btn-primary" type="button" id="loginScriptSave">
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                    <span data-i18n="optionsButtonSave"></span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="card my-4 shadow">
+                <div class="card-body">
+                  <h5 data-i18n="optionsLoginScriptsReference"></h5>
+                  <p data-i18n="optionsLoginScriptsReferenceHelpText"></p>
+                  <div class="table-responsive">
+                    <table class="table table-sm table-bordered" id="loginScriptReference">
+                      <thead>
+                        <tr>
+                          <th scope="col"><span data-i18n="optionsColumnLoginScriptFunction"></span></th>
+                          <th scope="col"><span data-i18n="optionsColumnLoginScriptReturns"></span></th>
+                          <th scope="col"><span data-i18n="optionsColumnLoginScriptDescription"></span></th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                  <h6 data-i18n="optionsLoginScriptsExample"></h6>
+                  <pre class="border rounded p-2" id="loginScriptExample"></pre>
+                </div>
+              </div>
+
+              <div id="dialogDeleteLoginScript" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 data-i18n="optionsLoginScriptsRemove"></h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p><span data-i18n="optionsLoginScriptsConfirmation" data-i18n-placeholder="<strong></strong>"></span></p>
+                    </div>
+                    <div class="modal-footer">
+                      <button class="btn btn-sm btn-secondary" data-bs-dismiss="modal" aria-hidden="true">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                        <span data-i18n="optionsButtonCancel"></span>
+                      </button>
+                      <button class="btn btn-sm yes btn-danger">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                        <span data-i18n="optionsButtonRemoveNow"></span>
+                      </button>
                     </div>
                   </div>
                 </div>
